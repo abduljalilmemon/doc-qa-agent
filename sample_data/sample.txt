@@ -1,0 +1,1 @@
+FastAPI makes it simple to build high-performance APIs in Python. This demo agent indexes your documents and answers questions with TF-IDF retrieval. It is easy to run locally and extend with real LLMs.
