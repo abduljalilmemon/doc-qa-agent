@@ -1,8 +1,7 @@
-
 import os
 import uuid
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from pydantic import BaseModel
+from .schemas import QuerySchema
 from .storage import DocumentStore
 from .ingest import ingest_file
 from .retriever import search
@@ -16,12 +15,8 @@ app = FastAPI(title="Doc Q&A Agent", version="1.0.0")
 store = DocumentStore(persist_path=STORE_PATH)
 store.load()
 
-class Query(BaseModel):
-    q: str
-    top_k: int = 5
-
 @app.get("/stats")
-def stats():
+def get_stats():
     return store.stats()
 
 @app.post("/upload")
@@ -40,8 +35,8 @@ async def upload(file: UploadFile = File(...), doc_id: str | None = None):
     return {"success": True, **info}
 
 @app.post("/query")
-def query(payload: Query):
-    return search(store, payload.q, top_k=payload.top_k)
+def query(payload: QuerySchema):
+    return search(store, payload.query, max_results=payload.max_results)
 
 @app.post("/reset")
 def reset():

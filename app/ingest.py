@@ -1,9 +1,9 @@
 import os
+from pypdf import PdfReader
 from .storage import DocumentStore, Chunk
 from .utils import split_sentence
-from pypdf import PdfReader
 
-def get_text(path: str):
+def get_text(path):
     ext = os.path.splitext(path)[1].lower()
     if ext in [".txt", ".md", ".csv"]:
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
@@ -19,18 +19,18 @@ def get_text(path: str):
 
 def get_chunks(sentences = [], target_chars = 500, overlap = 60):
     chunks = []
-    buf = ""
-    for sent in sentences:
-        if not buf:
-            buf = sent
-        elif len(buf) + 1 + len(sent) <= target_chars:
-            buf += " " + sent
+    buffer = ""
+    for sentence in sentences:
+        if not buffer:
+            buffer = sentence
+        elif len(buffer) + 1 + len(sentence) <= target_chars:
+            buffer += " " + sentence
         else:
-            chunks.append(buf.strip())
-            tail = buf[-overlap:] if overlap else ""
-            buf = (tail + " " + sent).strip()
-    if buf:
-        chunks.append(buf.strip())
+            chunks.append(buffer.strip())
+            tail = buffer[-overlap:] if overlap else ""
+            buffer = (tail + " " + sentence).strip()
+    if buffer:
+        chunks.append(buffer.strip())
     return chunks
 
 def ingest_file(path: str, store: DocumentStore, doc_id: str):

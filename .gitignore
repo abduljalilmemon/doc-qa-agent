@@ -20,7 +20,9 @@ parts/
 sdist/
 var/
 wheels/
+uploads/
 share/python-wheels/
+store.pkl
 *.egg-info/
 .installed.cfg
 *.egg
